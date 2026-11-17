@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#121110">
+<title>eSports टूर्नामेंट</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--bg:#121110;--card:#1b1a18;--or:#e8590c;--tx:#f3efe9;--mu:#a39d94;--ln:#2e2c29}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 "Noto Sans Devanagari",system-ui,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.w{max-width:560px;margin:0 auto;padding:14px}
+h1{font-size:24px;margin:6px 0 4px}h3{margin:0 0 8px;font-size:17px}
+p{margin:4px 0;color:var(--mu)}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:14px;margin:10px 0}
+.big{font-size:18px;font-weight:700;color:var(--tx)}
+.tabs{display:flex;gap:8px;overflow-x:auto;position:sticky;top:0;background:var(--bg);padding:8px 0;scrollbar-width:none;z-index:5}
+.tabs::-webkit-scrollbar{display:none}
+.tab,.chip{flex:none;padding:8px 14px;border-radius:20px;border:1px solid var(--ln);background:var(--card);color:var(--tx);font:inherit;cursor:pointer}
+.tab.on,.chip.on{background:var(--or);border-color:var(--or);color:#fff}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 0}
+button.b{background:var(--or);color:#fff;border:0;border-radius:10px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer;margin-top:8px}
+button.b.g{background:#2e2c29}button.b.s{padding:6px 10px;font-size:14px}
+input,select,textarea{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--ln);border-radius:10px;padding:10px;font:inherit;margin-top:8px}
+:focus-visible{outline:2px solid var(--or);outline-offset:2px}
+.row{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--ln)}
+.row:last-child{border:0}
+.mu{color:var(--mu);font-size:14px}
+.amts{display:flex;flex-wrap:wrap;gap:8px}
+table{width:100%;border-collapse:collapse}td,th{padding:7px 4px;text-align:left;border-bottom:1px solid var(--ln)}
+th{color:var(--mu);font-weight:500;font-size:14px}
+#qr{display:inline-block;background:#fff;padding:10px;border-radius:10px;margin:8px 0}
+#pinBox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:20;align-items:center;justify-content:center;padding:20px}
+#pinBox .card{width:100%;max-width:340px;margin:0}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--or);color:#fff;padding:10px 16px;border-radius:10px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:30}
+#toast.on{opacity:1}
+.top{display:flex;justify-content:space-between;align-items:flex-start}
+</style></head>
+<body><div class="w">
+<div class="top"><div style="display:flex;align-items:center;gap:10px"><img src="data:image/jpeg;base64,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" width="52" height="52" style="border-radius:12px;flex:none" alt="logo"><h1>eSports टूर्नामेंट</h1></div><button class="tab" id="orgBtn" onclick="toggleOrg()">🔐 आयोजक</button></div>
+<p>टीम रजिस्टर करो, स्कोर देखो, लीडरबोर्ड में नंबर 1 बनो।</p>
+<div class="card"><div class="big">🪙 1 कॉइन = ₹1</div></div>
+<div class="card"><div class="big">📲 UPI: <span id="upiTxt"></span></div></div>
+<div id="warn" class="card" style="display:none;border-color:var(--or)">⚠️ Firebase सेटअप बाकी है। index.html में FB कॉन्फ़िग भरें।</div>
+<div class="tabs" id="tabs"></div>
+<div id="view"></div>
+</div><div id="pinBox"><div class="card"><h3>🔐 आयोजक PIN डालो</h3><input id="pinIn" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN" onkeydown="if(event.key==='Enter')pinOk()"><button class="b" onclick="pinOk()">अंदर जाओ</button> <button class="b g" onclick="pinCancel()">रद्द करो</button><p class="mu">v8</p></div></div>
+<div id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* ====== सेटिंग्स ====== */
+const ADMIN_PIN="425263";            // आयोजक PIN बदलें
+const UPI="7763969981@mbk";
+/* ============================================= */
+const MODES=["Solo","Duo","Squad","Clash Squad","Lone Wolf"];
+const TABS=[["home","होम"],["reg","रजिस्टर"],["teams","टीमें"],["score","स्कोर"],["sched","शेड्यूल"],["free","फ्री"],["prof","प्रोफाइल"],["wd","विथड्रॉ"]];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=t=>{const d=new Date(t);return isNaN(d)?esc(t):d.toLocaleString("hi-IN",{dateStyle:"medium",timeStyle:"short"})};
+const rankPts=r=>({1:12,2:9,3:8,4:7,5:6,6:5,7:4,8:3,9:2,10:1})[r]||0;
+const pts=t=>(t.kills||0)+(t.rp||0);
+const S={teams:[],matches:[],announce:[],inbox:[],reqs:[],txns:[],free:[],wds:[],settings:[]};
+const COL={teams:"teams",matches:"matches",announce:"announce",inbox:"inbox",reqs:"coinReqs",txns:"txns",free:"freeEntries",wds:"withdrawals",settings:"settings"};
+let tab="home",chip="सभी",amt=null,left=0,tmr=null,org=false,sub={},db,auth,FV;
+const mine=()=>localStorage.myTeam||"";
+const team=id=>S.teams.find(t=>t.id==id);
+const refCode=t=>String(t.id).slice(-6).toUpperCase();
+const _rp=new URLSearchParams(location.search).get("ref");
+if(_rp){localStorage.refBy=_rp.toUpperCase().replace(/[^A-Z0-9]/g,"");tab="reg"}
+function toast(m){const e=$("#toast");e.textContent=m;e.className="on";setTimeout(()=>e.className="",2500)}
+function listen(k){if(sub[k])return;sub[k]=1;db.collection(COL[k]).onSnapshot(s=>{S[k]=s.docs.map(d=>({id:d.id,...d.data()}));draw()},e=>{sub[k]=0;toast("Firebase: "+e.code)})}
+/* ====== लोकल डेटाबेस (बिना Firebase): डेटा इसी फ़ोन में सेव होता है ====== */
+function mkDB(){
+ const K="esports_db",subs={};
+ const load=()=>{try{return JSON.parse(localStorage.getItem(K))||{}}catch(e){return {}}};
+ const save=d=>localStorage.setItem(K,JSON.stringify(d));
+ const notify=c=>(subs[c]||[]).forEach(f=>f());
+ const rid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+ const apply=(o,v)=>{const r={...o};for(const k in v){r[k]=(v[k]&&v[k].__inc!=null)?(+r[k]||0)+v[k].__inc:v[k]}return r};
+ const snap=c=>({docs:Object.entries(load()[c]||{}).map(([id,v])=>({id,data:()=>v}))});
+ const ref=(c,id)=>{const r={c,id:id||rid()};
+  r.delete=()=>{const d=load();if(d[c])delete d[c][r.id];save(d);notify(c);return Promise.resolve()};
+  r.update=v=>{const d=load();d[c]=d[c]||{};d[c][r.id]=apply(d[c][r.id]||{},v);save(d);notify(c);return Promise.resolve()};
+  r.set=v=>{const d=load();d[c]=d[c]||{};d[c][r.id]=apply({},v);save(d);notify(c);return Promise.resolve()};
+  return r};
+ addEventListener("storage",e=>{if(e.key==K)Object.keys(subs).forEach(notify)});
+ return{
+  collection:c=>({
+   doc:id=>ref(c,id),
+   add:v=>{const r=ref(c);return r.set(v).then(()=>({id:r.id}))},
+   onSnapshot:cb=>{(subs[c]=subs[c]||[]).push(()=>cb(snap(c)));setTimeout(()=>cb(snap(c)),0);return()=>{}}
+  }),
+  batch:()=>{const ops=[];return{update:(r,v)=>ops.push(()=>r.update(v)),set:(r,v)=>ops.push(()=>r.set(v)),delete:r=>ops.push(()=>r.delete()),commit:()=>{ops.forEach(f=>f());return Promise.resolve()}}}
+ }
+}
+db=mkDB();auth={currentUser:{},signOut(){}};FV={increment:n=>({__inc:n})};
+["teams","matches","announce","reqs","txns","free","settings"].forEach(listen);
+$("#upiTxt").textContent=UPI;
+
+/* आयोजक मोड: PIN + Firebase Authentication */
+function toggleOrg(){
+  if(org){org=false;$("#orgBtn").textContent="🔐 आयोजक";draw(1);return}
+  $("#pinBox").style.display="flex";$("#pinIn").value="";setTimeout(()=>$("#pinIn").focus(),50);
+}
+function pinCancel(){$("#pinBox").style.display="none"}
+function pinOk(){
+  const pin=$("#pinIn").value.replace(/[०-९]/g,d=>"०१२३४५६७८९".indexOf(d)).replace(/\D/g,"");
+  if(pin!==ADMIN_PIN)return toast("गलत PIN, दोबारा डालो");
+  $("#pinBox").style.display="none";org=true;$("#orgBtn").textContent="🔓 आयोजक मोड चालू";
+  listen("inbox");listen("wds");draw(1);toast("आयोजक मोड चालू ✅");
+}
+
+/* ---------- व्यू ---------- */
+const matchList=m=>{
+  const L=[...S.matches].filter(x=>!m||x.mode==m).sort((a,b)=>String(a.time).localeCompare(b.time));
+  return L.length?L.map(x=>`<div class="row"><div style="flex:1"><b>मैच ${esc(x.no)}</b> · ${esc(x.mode)}<div class="mu">${fmt(x.time)}</div><div class="mu">${esc(x.note)}</div>${x.room||x.pass?`<div class="mu">🆔 Room ID: <b style="color:var(--tx)">${esc(x.room)}</b> · 🔑 पासवर्ड: <b style="color:var(--tx)">${esc(x.pass)}</b></div>`:""}${org?`<div style="display:flex;gap:6px"><input id="r_${x.id}" placeholder="Room ID" value="${esc(x.room)}"><input id="p_${x.id}" placeholder="पासवर्ड" value="${esc(x.pass)}"></div><button class="b s" onclick="saveRoom('${x.id}')">💾 रूम ID/पासवर्ड सेव करो</button>`:""}</div>${org?`<button class="b g s" onclick="del('matches','${x.id}')">✕</button>`:""}</div>`).join(""):`<p>अभी कोई मैच नहीं है।</p>`;
+};
+const teamOpts=sel=>S.teams.map(t=>`<option value="${t.id}" ${t.id==sel?"selected":""}>${esc(t.name)}</option>`).join("");
+const pz=()=>S.settings.find(x=>x.id=="prizes")||{};
+const prizeLine=()=>{const p=pz();return (p.r1||p.r2||p.r3)?`<p class="mu">🏅 मैच इनाम: रैंक 1 = ${p.r1||0} कॉइन · रैंक 2 = ${p.r2||0} · रैंक 3 = ${p.r3||0}</p>`:""};
+const refLink=t=>location.origin+location.pathname.replace(/index\.html$/,"")+"?ref="+refCode(t);
+const refMsg=t=>"🎮 eSports टूर्नामेंट में मेरे रेफरल कोड "+refCode(t)+" से जुड़ो और टीम रजिस्टर करो: "+refLink(t);
+const refCard=t=>`<div class="card"><h3>🎁 रेफरल</h3><div class="row"><span>आपका रेफरल कोड</span><b>${refCode(t)}</b></div><p class="mu" style="word-break:break-all">${esc(refLink(t))}</p><div class="row"><span>आपके रेफर किए हुए</span><b>${S.teams.filter(x=>x.refBy==t.id).length}</b></div>${(+pz().ref||0)>0?`<p class="mu">दोस्त का पहला कॉइन पेमेंट कन्फर्म होने पर आपको ${pz().ref} कॉइन मिलेंगे।</p>`:""}<a href="https://wa.me/?text=${encodeURIComponent(refMsg(t))}" target="_blank" rel="noopener"><button class="b">📲 WhatsApp पर भेजो</button></a> <button class="b g" onclick="copyRef()">🔗 लिंक कॉपी करो</button></div>`;
+function copyRef(){const t=team(mine());if(!t)return;const m=refMsg(t);if(navigator.clipboard)navigator.clipboard.writeText(m).then(()=>toast("कॉपी हो गया ✅"),()=>toast(m));else toast(m)}
+const modeOpts=()=>MODES.map(m=>`<option>${m}</option>`).join("");
+const V={
+home:()=>`<div class="card"><h3>स्वागत है! 👋</h3><p>अपनी टीम रजिस्टर करो, मैच खेलो और इनाम जीतो।</p></div>
+<div class="chips">${["सभी",...MODES].map(m=>`<button class="chip ${m==chip?"on":""}" onclick="chip='${m}';draw(1)">${m}</button>`).join("")}</div>
+<div class="card"><h3>📅 सारे मैच</h3>${matchList(chip=="सभी"?"":chip)}</div>
+<div class="card"><h3>📢 आयोजक के मैसेज</h3>${[...S.announce].sort((a,b)=>b.ts-a.ts).map(a=>`<div class="row"><div>${esc(a.text)}<div class="mu">${fmt(a.ts)}</div></div>${org?`<button class="b g s" onclick="del('announce','${a.id}')">✕</button>`:""}</div>`).join("")||"<p>अभी कोई मैसेज नहीं है।</p>"}
+${org?`<textarea id="an" rows="2" placeholder="सबके लिए मैसेज लिखो"></textarea><button class="b" onclick="postAn()">मैसेज भेजो</button>`:""}</div>
+<div class="card"><h3>✉️ आयोजक को मैसेज भेजो</h3><input id="pn" placeholder="आपका नाम"><textarea id="pm" rows="2" placeholder="आपका मैसेज"></textarea><button class="b" onclick="sendMsg()">मैसेज भेजो</button></div>
+${org?`<div class="card"><h3>📥 खिलाड़ियों के मैसेज</h3>${[...S.inbox].sort((a,b)=>b.ts-a.ts).map(m=>`<div class="row"><div><b>${esc(m.name)}</b>: ${esc(m.text)}</div><button class="b g s" onclick="del('inbox','${m.id}')">✕</button></div>`).join("")||"<p>कोई मैसेज नहीं।</p>"}</div>`:""}`,
+
+reg:()=>`<div class="card"><h3>📝 टीम रजिस्टर करो</h3><input id="rn" placeholder="टीम का नाम"><input id="rc" placeholder="कैप्टन का Free Fire नाम"><input id="ru" inputmode="numeric" placeholder="Free Fire UID"><input id="rf" autocapitalize="characters" placeholder="रेफरल कोड (ऑप्शनल)" value="${esc(localStorage.refBy||"")}"><select id="rm">${modeOpts()}</select><button class="b" onclick="register()">रजिस्टर करो</button></div>`,
+
+teams:()=>`<div class="card"><h3>👥 सारी टीमें (${S.teams.length})</h3>${S.teams.map(t=>`<div class="row"><div><b>${esc(t.name)}</b><div class="mu">${esc(t.mode)} · कैप्टन ${esc(t.captain)}</div></div><b>🪙 ${t.coins||0}</b></div>`).join("")||"<p>अभी कोई टीम नहीं है।</p>"}</div>
+${org?`<div class="card"><h3>🪙 कॉइन रिक्वेस्ट</h3>${S.reqs.map(r=>`<div class="row"><div><b>${esc(r.teamName)}</b> · ${r.coins} कॉइन<div class="mu">${fmt(r.ts)}</div></div><div><button class="b s" onclick="approve('${r.id}')">✅ पेमेंट आया, ${r.coins} कॉइन जोड़ो</button> <button class="b g s" onclick="del('coinReqs','${r.id}')">✕ हटाओ</button></div></div>`).join("")||"<p>कोई रिक्वेस्ट नहीं।</p>"}</div>`:""}`,
+
+score:()=>`<div class="card"><h3>🏆 लीडरबोर्ड</h3><table><tr><th>#</th><th>टीम</th><th>किल</th><th>पॉइंट</th></tr>${[...S.teams].sort((a,b)=>pts(b)-pts(a)).map((t,i)=>`<tr><td>${i+1}</td><td>${esc(t.name)}</td><td>${t.kills||0}</td><td><b>${pts(t)}</b></td></tr>`).join("")}</table><p class="mu">पॉइंट = किल + रैंक पॉइंट (रैंक 1 = 12 पॉइंट)।</p>${prizeLine()}</div>
+${org?`<div class="card"><h3>➕ मैच का स्कोर डालो</h3><select id="st">${teamOpts()}</select><input id="sk" type="number" min="0" placeholder="किल"><input id="sr" type="number" min="1" placeholder="रैंक"><button class="b" onclick="addScore()">स्कोर जोड़ो</button></div>`:""}
+${org?`<div class="card"><h3>🏅 ऑटो इनाम और रेफरल बोनस</h3><p>स्कोर डालते समय जिस रैंक पर टीम आएगी, उसे इतने कॉइन अपने-आप मिल जाएँगे। 0 या खाली = कोई इनाम नहीं।</p><input id="pz1" type="number" min="0" placeholder="रैंक 1 को कितने कॉइन" value="${pz().r1||""}"><input id="pz2" type="number" min="0" placeholder="रैंक 2 को कितने कॉइन" value="${pz().r2||""}"><input id="pz3" type="number" min="0" placeholder="रैंक 3 को कितने कॉइन" value="${pz().r3||""}"><input id="pz4" type="number" min="0" placeholder="रेफरल बोनस (कॉइन): दोस्त का पहला पेमेंट आने पर" value="${pz().ref||""}"><button class="b" onclick="savePrizes()">इनाम सेव करो</button></div>`:""}`,
+
+sched:()=>`<div class="card"><h3>🗓️ शेड्यूल</h3>${matchList("")}</div>
+${org?`<div class="card"><h3>➕ मैच जोड़ो</h3><input id="mn" placeholder="मैच नंबर"><input id="mt" type="datetime-local"><select id="mm">${modeOpts()}</select><input id="mo" placeholder="नोट, जैसे Bermuda, Room ID 8 बजे मिलेगा"><input id="mr" placeholder="Room ID (ऑप्शनल, बाद में भी डाल सकते हो)"><input id="mp" placeholder="रूम पासवर्ड (ऑप्शनल)"><button class="b" onclick="addMatch()">मैच जोड़ो</button></div>`:""}`,
+
+free:()=>{const d=nextSun();return `<div class="card"><h3>🎁 फ्री एंट्री टूर्नामेंट</h3><p>हर रविवार फ्री एंट्री। अगला टूर्नामेंट: <b style="color:var(--tx)">${d.toLocaleDateString("hi-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</b></p>
+<select id="ft">${teamOpts(mine())}</select><select id="fm">${modeOpts()}</select><button class="b" onclick="freeEntry()">फ्री एंट्री लो</button></div>
+<div class="card"><h3>इस रविवार की एंट्री (${S.free.filter(f=>f.date==dkey(d)).length})</h3>${S.free.filter(f=>f.date==dkey(d)).map(f=>`<div class="row"><span>${esc(f.teamName)}</span><span class="mu">${esc(f.mode)}</span></div>`).join("")||"<p>अभी कोई एंट्री नहीं।</p>"}</div>`},
+
+prof:()=>{const t=team(mine());
+ const rq=S.reqs.filter(r=>r.teamId==mine()).length;const tx=S.txns.filter(x=>x.teamId==mine()).sort((a,b)=>b.ts-a.ts);
+ return `<div class="card"><h3>👤 प्रोफाइल</h3><select id="pt" onchange="localStorage.myTeam=this.value;draw(1)"><option value="">टीम चुनो</option>${teamOpts(mine())}</select>
+${t?`<div class="row"><span>कैप्टन</span><b>${esc(t.captain)}</b></div><div class="row"><span>UID</span><b>${esc(t.uid)}</b></div><div class="row"><span>कॉइन</span><b>🪙 ${t.coins||0}</b></div><div class="row"><span>पेमेंट स्टेटस</span><b>${rq?"⏳ पुष्टि बाकी":"✅ कोई पेंडिंग नहीं"}</b></div>`:"<p>ऊपर से अपनी टीम चुनो।</p>"}</div>
+${t?refCard(t):""}
+${t?`<div class="card"><h3>🧾 बिलिंग हिस्ट्री</h3>${tx.map(x=>`<div class="row"><div>${esc(x.text)}<div class="mu">${fmt(x.ts)}</div></div><b>${x.coins>0?"+":""}${x.coins}</b></div>`).join("")||"<p>अभी कोई ट्रांज़ैक्शन नहीं।</p>"}</div>`:""}`},
+
+wd:()=>{const link=`upi://pay?pa=${UPI}&pn=eSports&am=${amt}&cu=INR&tn=Coins`;
+ return `<div class="card"><h3>➕ कॉइन जोड़ो (UPI से)</h3><select id="ct" onchange="localStorage.myTeam=this.value"><option value="">अपनी टीम चुनो</option>${teamOpts(mine())}</select>
+<div class="amts" style="margin-top:8px">${[5,10,15,20,30].map(n=>`<button class="chip ${amt==n?"on":""}" onclick="pick(${n})">+${n}</button>`).join("")}</div>
+${amt?`<div style="text-align:center"><p>₹${amt} भेजो · बचा समय: <b id="tm">${left}</b> सेकंड</p><div id="qr"></div><br><a href="${link}"><button class="b">📲 UPI ऐप खोलो</button></a><br><button class="b g" onclick="payDone()">मैंने पेमेंट कर दिया</button></div>`:""}</div>
+<div class="card"><h3>💸 विथड्रॉ</h3><p>कम से कम 25 कॉइन।</p><input id="wc" type="number" min="25" placeholder="कॉइन की संख्या"><input id="wu" placeholder="आपकी UPI ID"><button class="b" onclick="withdraw()">विथड्रॉ रिक्वेस्ट भेजो</button></div>
+${org?`<div class="card"><h3>📤 विथड्रॉ रिक्वेस्ट</h3>${S.wds.map(w=>`<div class="row"><div><b>${esc(w.teamName)}</b> · ${w.coins} कॉइन<div class="mu">${esc(w.upi)}</div></div><button class="b s" onclick="del('withdrawals','${w.id}')">✓ भुगतान हो गया</button></div>`).join("")||"<p>कोई रिक्वेस्ट नहीं।</p>"}</div>`:""}`}
+};
+
+/* ---------- ड्रॉ ---------- */
+function draw(f){
+  const a=document.activeElement;if(!f&&a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName))return;
+  $("#tabs").innerHTML=TABS.map(([k,n])=>`<button class="tab ${k==tab?"on":""}" onclick="tab='${k}';draw(1)">${n}</button>`).join("");
+  $("#view").innerHTML=V[tab]();
+  if(tab=="wd"&&amt)new QRCode($("#qr"),{text:`upi://pay?pa=${UPI}&pn=eSports&am=${amt}&cu=INR&tn=Coins`,width:180,height:180});
+}
+const nextSun=()=>{const d=new Date();d.setDate(d.getDate()+(7-d.getDay())%7);return d};
+const dkey=d=>d.toISOString().slice(0,10);
+const need=()=>{if(!db){toast("Firebase सेटअप बाकी है");return 0}return 1};
+const val=id=>($("#"+id).value||"").trim();
+const del=(c,id)=>db.collection(c).doc(id).delete().catch(e=>toast(e.code));
+
+/* ---------- एक्शन ---------- */
+async function register(){if(!need())return;
+  const n=val("rn"),c=val("rc"),u=val("ru"),m=$("#rm").value;
+  if(!n||!c||!u)return toast("सारी जानकारी भरो");
+  if(S.teams.some(t=>t.name.toLowerCase()==n.toLowerCase()))return toast("यह टीम नाम पहले से है");
+  const rf=val("rf").toUpperCase(),rt=rf?S.teams.find(t=>refCode(t)==rf):null;
+  if(rf&&!rt)return toast("रेफरल कोड सही नहीं है");
+  const r=await db.collection("teams").add({name:n,captain:c,uid:u,mode:m,coins:0,kills:0,rp:0,refBy:rt?rt.id:"",ts:Date.now()});
+  localStorage.removeItem("refBy");localStorage.myTeam=r.id;toast("टीम रजिस्टर हो गई ✅");tab="prof";draw(1)}
+async function postAn(){const t=val("an");if(!t)return;await db.collection("announce").add({text:t,ts:Date.now()});draw(1)}
+async function sendMsg(){if(!need())return;const n=val("pn"),t=val("pm");if(!n||!t)return toast("नाम और मैसेज लिखो");
+  await db.collection("inbox").add({name:n,text:t,ts:Date.now()});toast("मैसेज भेज दिया ✅");draw(1)}
+async function addMatch(){const n=val("mn"),t=val("mt");if(!n||!t)return toast("नंबर और समय भरो");
+  await db.collection("matches").add({no:n,time:t,mode:$("#mm").value,note:val("mo"),room:val("mr"),pass:val("mp")});toast("मैच जुड़ गया ✅");draw(1)}
+async function saveRoom(id){await db.collection("matches").doc(id).update({room:val("r_"+id),pass:val("p_"+id)});toast("Room ID/पासवर्ड सेव हो गया ✅");draw(1)}
+async function addScore(){const id=$("#st").value,k=+val("sk")||0,r=+val("sr")||0;if(!id)return;
+  const pr=+pz()["r"+r]||0,b=db.batch();
+  b.update(db.collection("teams").doc(id),{kills:FV.increment(k),rp:FV.increment(rankPts(r)),...(pr>0?{coins:FV.increment(pr)}:{})});
+  if(pr>0)b.set(db.collection("txns").doc(),{teamId:id,text:"मैच इनाम (रैंक "+r+")",coins:pr,ts:Date.now()});
+  await b.commit();toast(pr>0?"स्कोर जुड़ा, "+pr+" कॉइन इनाम मिल गया 🏆":"स्कोर जुड़ गया ✅");draw(1)}
+async function savePrizes(){const v=n=>Math.max(0,Math.floor(+val(n)||0));
+  await db.collection("settings").doc("prizes").set({r1:v("pz1"),r2:v("pz2"),r3:v("pz3"),ref:v("pz4")});toast("इनाम सेव हो गया ✅");draw(1)}
+async function freeEntry(){if(!need())return;const id=$("#ft").value;if(!id)return toast("टीम चुनो");
+  const k=dkey(nextSun()),docId=id+"_"+k;
+  if(S.free.some(f=>f.id==docId))return toast("इस रविवार की एंट्री पहले ले ली है");
+  await db.collection("freeEntries").doc(docId).set({teamId:id,teamName:team(id).name,mode:$("#fm").value,date:k,ts:Date.now()});toast("फ्री एंट्री मिल गई 🎁")}
+function pick(n){amt=n;left=60;clearInterval(tmr);tmr=setInterval(()=>{left--;const e=$("#tm");if(e)e.textContent=left;if(left<=0){clearInterval(tmr);amt=null;toast("समय खत्म, दोबारा रकम चुनो");draw(1)}},1000);draw(1)}
+async function payDone(){if(!need())return;const id=$("#ct").value||mine();if(!id)return toast("पहले अपनी टीम चुनो");
+  await db.collection("coinReqs").add({teamId:id,teamName:team(id).name,coins:amt,ts:Date.now()});
+  clearInterval(tmr);amt=null;toast("रिक्वेस्ट भेज दी। आयोजक की पुष्टि का इंतज़ार करो ⏳");draw(1)}
+async function approve(id){const r=S.reqs.find(x=>x.id==id),b=db.batch();
+  b.update(db.collection("teams").doc(r.teamId),{coins:FV.increment(r.coins)});
+  b.set(db.collection("txns").doc(),{teamId:r.teamId,text:"UPI से कॉइन जोड़े",coins:r.coins,ts:Date.now()});
+  const ft=team(r.teamId),bn=+pz().ref||0,rr=ft&&ft.refBy?team(ft.refBy):null;
+  if(bn>0&&rr&&!ft.refPaid){b.update(db.collection("teams").doc(rr.id),{coins:FV.increment(bn)});
+    b.set(db.collection("txns").doc(),{teamId:rr.id,text:"रेफरल बोनस ("+ft.name+")",coins:bn,ts:Date.now()});
+    b.update(db.collection("teams").doc(ft.id),{refPaid:true})}
+  b.delete(db.collection("coinReqs").doc(id));await b.commit();toast("कॉइन जुड़ गए ✅")}
+async function withdraw(){if(!need())return;const id=mine(),c=+val("wc"),u=val("wu"),t=team(id);
+  if(!t)return toast("प्रोफाइल में अपनी टीम चुनो");
+  if(c<25)return toast("कम से कम 25 कॉइन");
+  if(c>(t.coins||0))return toast("इतने कॉइन नहीं हैं");
+  if(!u.includes("@"))return toast("सही UPI ID डालो");
+  const b=db.batch();
+  b.update(db.collection("teams").doc(id),{coins:FV.increment(-c)});
+  b.set(db.collection("withdrawals").doc(),{teamId:id,teamName:t.name,coins:c,upi:u,ts:Date.now()});
+  b.set(db.collection("txns").doc(),{teamId:id,text:"विथड्रॉ रिक्वेस्ट",coins:-c,ts:Date.now()});
+  await b.commit();toast("विथड्रॉ रिक्वेस्ट भेज दी ✅");draw(1)}
+
+draw(1);
+if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script></body></html>
